@@ -1,0 +1,144 @@
+basePath: /
+definitions:
+  models.Direction:
+    properties:
+      durationInTraffic:
+        example: 3062
+        type: number
+      orderedAt:
+        example: 57824
+        type: number
+      path:
+        items:
+          $ref: '#/definitions/models.Location'
+        type: array
+    type: object
+  models.DistanceMatrix:
+    properties:
+      directionsArray:
+        items:
+          items:
+            $ref: '#/definitions/models.DistanceMatrixEntity'
+          type: array
+        type: array
+    type: object
+  models.DistanceMatrixEntity:
+    properties:
+      distance:
+        example: 57824
+        type: number
+      duration:
+        example: 2562
+        type: number
+      durationInTraffic:
+        example: 3062
+        type: number
+    type: object
+  models.Location:
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: soberkoder@swagger.io
+    name: API Support
+  description: This is a microservice that handles communication with different maps
+    services providers. It offers a simple API that abstracts away the complexity
+    of dealing directly with the provider’s api.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Maps Services Manager APIs
+  version: "1.0"
+paths:
+  /directions:
+    get:
+      consumes:
+      - application/json
+      description: Our First API To Get Direction info between two locations
+      parameters:
+      - description: Select A Provider
+        enum:
+        - Google
+        - Here
+        in: query
+        name: provider
+        type: string
+      - description: Put An Origin in this format lat,lng
+        in: query
+        name: origin
+        type: string
+      - description: Put A Destination in this format lat,lng
+        in: query
+        name: destination
+        type: string
+      - description: WithPath Option
+        enum:
+        - "True"
+        - "False"
+        in: query
+        name: withPath
+        type: string
+      - description: Traffic Option
+        enum:
+        - "True"
+        - "False"
+        in: query
+        name: traffic
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Direction'
+      summary: Calculate Route
+      tags:
+      - direction API
+  /distance_matrix:
+    get:
+      consumes:
+      - application/json
+      description: Get a 2D array of directions
+      parameters:
+      - description: Select A Provider
+        enum:
+        - Google
+        - Here
+        in: query
+        name: provider
+        type: string
+      - description: Put athe list of Origins in this format lat,lng|lat,lng ...
+        in: query
+        name: origins
+        type: string
+      - description: Put the list of Destinations in this format lat,lng|lat,lng ...
+        in: query
+        name: destinations
+        type: string
+      - description: Traffic Option
+        enum:
+        - "True"
+        - "False"
+        in: query
+        name: traffic
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.DistanceMatrix'
+      summary: Calculate Matrix
+      tags:
+      - Distance Matrix API
+securityDefinitions:
+  BasicAuth:
+    type: basic
+  jwtTokenKey:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

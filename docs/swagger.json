@@ -1,0 +1,210 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a microservice that handles communication with different maps services providers. It offers a simple API that abstracts away the complexity of dealing directly with the provider’s api.",
+        "title": "Maps Services Manager APIs",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "email": "soberkoder@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/directions": {
+            "get": {
+                "description": "Our First API To Get Direction info between two locations",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "direction API"
+                ],
+                "summary": "Calculate Route",
+                "parameters": [
+                    {
+                        "enum": [
+                            "Google",
+                            "Here"
+                        ],
+                        "type": "string",
+                        "description": "Select A Provider",
+                        "name": "provider",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Put An Origin in this format lat,lng",
+                        "name": "origin",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Put A Destination in this format lat,lng",
+                        "name": "destination",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "True",
+                            "False"
+                        ],
+                        "type": "string",
+                        "description": "WithPath Option",
+                        "name": "withPath",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "True",
+                            "False"
+                        ],
+                        "type": "string",
+                        "description": "Traffic Option",
+                        "name": "traffic",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Direction"
+                        }
+                    }
+                }
+            }
+        },
+        "/distance_matrix": {
+            "get": {
+                "description": "Get a 2D array of directions",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Distance Matrix API"
+                ],
+                "summary": "Calculate Matrix",
+                "parameters": [
+                    {
+                        "enum": [
+                            "Google",
+                            "Here"
+                        ],
+                        "type": "string",
+                        "description": "Select A Provider",
+                        "name": "provider",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Put athe list of Origins in this format lat,lng|lat,lng ...",
+                        "name": "origins",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Put the list of Destinations in this format lat,lng|lat,lng ...",
+                        "name": "destinations",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "True",
+                            "False"
+                        ],
+                        "type": "string",
+                        "description": "Traffic Option",
+                        "name": "traffic",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.DistanceMatrix"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Direction": {
+            "type": "object",
+            "properties": {
+                "durationInTraffic": {
+                    "type": "number",
+                    "example": 3062
+                },
+                "orderedAt": {
+                    "type": "number",
+                    "example": 57824
+                },
+                "path": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Location"
+                    }
+                }
+            }
+        },
+        "models.DistanceMatrix": {
+            "type": "object",
+            "properties": {
+                "directionsArray": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/models.DistanceMatrixEntity"
+                        }
+                    }
+                }
+            }
+        },
+        "models.DistanceMatrixEntity": {
+            "type": "object",
+            "properties": {
+                "distance": {
+                    "type": "number",
+                    "example": 57824
+                },
+                "duration": {
+                    "type": "number",
+                    "example": 2562
+                },
+                "durationInTraffic": {
+                    "type": "number",
+                    "example": 3062
+                }
+            }
+        },
+        "models.Location": {
+            "type": "object"
+        }
+    },
+    "securityDefinitions": {
+        "BasicAuth": {
+            "type": "basic"
+        },
+        "jwtTokenKey": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}
